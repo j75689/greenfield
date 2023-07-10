@@ -51,6 +51,15 @@ func (k Keeper) ApplyStreamRecordChanges(ctx sdk.Context, streamRecordChanges []
 // ApplyUserFlowsList
 func (k Keeper) ApplyUserFlowsList(ctx sdk.Context, userFlowsList []types.UserFlows) (err error) {
 	userFlowsList = k.MergeUserFlows(userFlowsList)
+	if len(userFlowsList) > 0 {
+		for _, f := range userFlowsList {
+			ctx.Logger().Info("DG_ApplyUserFlowsList", "addr", f.From)
+			for _, o := range f.Flows {
+				ctx.Logger().Info("DG_ApplyUserFlowsList", "outflow", o.Rate, "addr", f.From)
+			}
+		}
+	}
+	ctx.Logger().Info("DG_ApplyUserFlowsList")
 	currentTime := ctx.BlockTime().Unix()
 	var streamRecordChanges []types.StreamRecordChange
 	for _, userFlows := range userFlowsList {

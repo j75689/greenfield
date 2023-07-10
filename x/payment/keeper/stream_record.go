@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"encoding/json"
 	"fmt"
 
 	sdkmath "cosmossdk.io/math"
@@ -129,6 +130,17 @@ func (k Keeper) UpdateStreamRecord(ctx sdk.Context, streamRecord *types.StreamRe
 	currentTimestamp := ctx.BlockTime().Unix()
 	timestamp := streamRecord.CrudTimestamp
 	params := k.GetParams(ctx)
+
+	ctx.Logger().Info("DG_UpdateStreamRecord", "autoSettle", autoSettle, "isPay", isPay, "currentTimestamp", currentTimestamp)
+	if streamRecord != nil {
+		j, _ := json.Marshal(*streamRecord)
+		ctx.Logger().Info("DG_UpdateStreamRecord", "streamRecord", j)
+	}
+	if change != nil {
+		j, _ := json.Marshal(*change)
+		ctx.Logger().Info("DG_UpdateStreamRecord", "change", j)
+	}
+
 	// update delta balance
 	if currentTimestamp != timestamp {
 		if !streamRecord.NetflowRate.IsZero() {
@@ -151,6 +163,8 @@ func (k Keeper) UpdateStreamRecord(ctx sdk.Context, streamRecord *types.StreamRe
 		newBufferBalance := sdkmath.ZeroInt()
 		if streamRecord.NetflowRate.IsNegative() {
 			newBufferBalance = streamRecord.NetflowRate.Abs().Mul(sdkmath.NewIntFromUint64(params.VersionedParams.ReserveTime))
+
+			ctx.Logger().Info("DG_UpdateStreamRecord", "newBufferBalance", newBufferBalance, "addr", streamRecord.Account)
 		}
 		if !newBufferBalance.Equal(streamRecord.BufferBalance) {
 			streamRecord.StaticBalance = streamRecord.StaticBalance.Sub(newBufferBalance).Add(streamRecord.BufferBalance)
@@ -161,6 +175,9 @@ func (k Keeper) UpdateStreamRecord(ctx sdk.Context, streamRecord *types.StreamRe
 	if !change.StaticBalanceChange.IsZero() {
 		streamRecord.StaticBalance = streamRecord.StaticBalance.Add(change.StaticBalanceChange)
 	}
+
+	ctx.Logger().Info("DG_UpdateStreamRecord", "StaticBalance", streamRecord.StaticBalance, "addr", streamRecord.Account)
+
 	if streamRecord.StaticBalance.IsNegative() {
 		account := sdk.MustAccAddressFromHex(streamRecord.Account)
 		hasBankAccount := k.accountKeeper.HasAccount(ctx, account)
