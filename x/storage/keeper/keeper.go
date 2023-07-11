@@ -487,7 +487,8 @@ func (k Keeper) CreateObject(
 
 	// check approval
 	if opts.PrimarySpApproval.ExpiredHeight < uint64(ctx.BlockHeight()) {
-		return sdkmath.ZeroUint(), errors.Wrapf(types.ErrInvalidApproval, "The approval of sp is expired.")
+		k.Logger(ctx).Error("TESTQA. The approval of sp is expired.", "expiredHeight", opts.PrimarySpApproval.ExpiredHeight, "currentHeight", ctx.BlockHeight())
+		return sdkmath.ZeroUint(), errors.Wrapf(types.ErrInvalidApproval, "The approval of sp is expired. ExpiredHeight: %d, CurrentHeight: %d", opts.PrimarySpApproval.ExpiredHeight, ctx.BlockHeight())
 	}
 
 	err := k.VerifySPAndSignature(ctx, sdk.MustAccAddressFromHex(bucketInfo.PrimarySpAddress), opts.ApprovalMsgBytes,
