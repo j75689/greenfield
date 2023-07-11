@@ -98,7 +98,7 @@ func (k Keeper) CreateBucket(
 	// check primary sp approval
 	if opts.PrimarySpApproval.ExpiredHeight < uint64(ctx.BlockHeight()) {
 		k.Logger(ctx).Error("TESTQA. The approval of sp is expired.", "expiredHeight", opts.PrimarySpApproval.ExpiredHeight, "currentHeight", ctx.BlockHeight())
-		return sdkmath.ZeroUint(), errors.Wrapf(types.ErrInvalidApproval, "The approval of sp is expired.")
+		return sdkmath.ZeroUint(), errors.Wrapf(types.ErrInvalidApproval, "The approval of sp is expired. ExpiredHeight: %d, CurrentHeight: %d", opts.PrimarySpApproval.ExpiredHeight, ctx.BlockHeight())
 	}
 
 	err = k.VerifySPAndSignature(ctx, primarySpAcc, opts.ApprovalMsgBytes, opts.PrimarySpApproval.Sig)
@@ -1550,7 +1550,7 @@ func (k Keeper) getAndDeleteDiscontinueObjectStatus(ctx sdk.Context, objectId ty
 		return types.OBJECT_STATUS_DISCONTINUED, errors.Wrapf(types.ErrInvalidObjectStatus, "object id: %s", objectId)
 	}
 	status := int32(binary.BigEndian.Uint32(bz))
-	store.Delete(types.GetDiscontinueObjectStatusKey(objectId)) //remove it at the same time
+	store.Delete(types.GetDiscontinueObjectStatusKey(objectId)) // remove it at the same time
 	return types.ObjectStatus(status), nil
 }
 
