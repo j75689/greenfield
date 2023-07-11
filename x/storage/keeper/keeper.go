@@ -97,6 +97,7 @@ func (k Keeper) CreateBucket(
 
 	// check primary sp approval
 	if opts.PrimarySpApproval.ExpiredHeight < uint64(ctx.BlockHeight()) {
+		k.Logger(ctx).Error("TESTQA. The approval of sp is expired.", "expiredHeight", opts.PrimarySpApproval.ExpiredHeight, "currentHeight", ctx.BlockHeight())
 		return sdkmath.ZeroUint(), errors.Wrapf(types.ErrInvalidApproval, "The approval of sp is expired.")
 	}
 
