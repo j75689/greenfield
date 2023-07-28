@@ -5,6 +5,7 @@ import (
 
 	storagemodule "github.com/bnb-chain/greenfield/x/storage"
 	storagetypesV1 "github.com/bnb-chain/greenfield/x/storage/types"
+	storagetypesV2 "github.com/bnb-chain/greenfield/x/storage/types/v2"
 	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
@@ -48,27 +49,20 @@ func (app *App) registerBEP1001UpgradeHandler() {
 	// Register the upgrade handler
 	app.UpgradeKeeper.SetUpgradeHandler(upgradetypes.BEP1001,
 		func(ctx sdk.Context, plan upgradetypes.Plan, fromVM module.VersionMap) (module.VersionMap, error) {
-			app.Logger().Info("upgrade to ", plan.Name)
-			storageModule, ok := app.mm.Modules[storagetypesV1.ModuleName].(storagemodule.AppModule)
-			if !ok {
-				return nil, fmt.Errorf("storage module not found")
-			}
-			err := storageModule.MigrateToV2(app.configurator)
-			if err != nil {
-				return nil, err
-			}
+			app.Logger().Info("processing upgrade handler", "name", plan.Name, "info", plan.Info)
+			fromVM[storagetypesV1.ModuleName] = storagetypesV2.ModuleVersion
 			return fromVM, nil
 		})
 
 	// Register the upgrade initializer
 	app.UpgradeKeeper.SetUpgradeInitializer(upgradetypes.BEP1001,
 		func() error {
-			app.Logger().Info("Init", upgradetypes.BEP1001, "upgrade")
+			app.Logger().Info("processing upgrade initializer", "name", upgradetypes.BEP1001)
 			storageModule, ok := app.mm.Modules[storagetypesV1.ModuleName].(storagemodule.AppModule)
 			if !ok {
 				return fmt.Errorf("storage module not found")
 			}
-			err := storageModule.MigrateToV2(app.configurator)
+			err := storageModule.MigrateToV2(app.configurator, app.InterfaceRegistry())
 			if err != nil {
 				return err
 			}

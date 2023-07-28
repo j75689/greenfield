@@ -163,7 +163,7 @@ var (
 		paymentmodule.AppModuleBasic{},
 		permissionmodule.AppModuleBasic{},
 		virtualgroupmodule.AppModuleBasic{},
-		storagemodule.AppModuleBasic{},
+		&storagemodule.AppModuleBasic{},
 		challengemodule.AppModuleBasic{},
 	)
 

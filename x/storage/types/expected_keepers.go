@@ -86,6 +86,7 @@ type CrossChainKeeper interface {
 	) (uint64, error)
 
 	RegisterChannel(name string, id sdk.ChannelID, app sdk.CrossChainApplication) error
+	MigrateChanel(name string, id sdk.ChannelID, app sdk.CrossChainApplication) error
 }
 
 type VirtualGroupKeeper interface {
