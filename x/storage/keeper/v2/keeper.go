@@ -180,7 +180,5 @@ func (k Keeper) LeaveGroup(
 	}
 
 	// remove group member extra
-	k.v1Keeper.GetPermKeeper().RemoveGroupMemberExtra(ctx, groupInfo.Id, member)
-
-	return nil
+	return k.v1Keeper.GetPermKeeper().RemoveGroupMemberExtra(ctx, groupInfo.Id, member)
 }
