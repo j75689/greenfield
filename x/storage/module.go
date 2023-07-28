@@ -16,7 +16,9 @@ import (
 
 	"github.com/bnb-chain/greenfield/x/storage/client/cli"
 	"github.com/bnb-chain/greenfield/x/storage/keeper"
+	v2 "github.com/bnb-chain/greenfield/x/storage/keeper/v2"
 	"github.com/bnb-chain/greenfield/x/storage/types"
+	typesV2 "github.com/bnb-chain/greenfield/x/storage/types/v2"
 )
 
 var (
@@ -91,6 +93,7 @@ type AppModule struct {
 	AppModuleBasic
 
 	keeper        keeper.Keeper
+	keeperV2      v2.Keeper
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
 	spKeeper      types.SpKeeper
@@ -99,6 +102,7 @@ type AppModule struct {
 func NewAppModule(
 	cdc codec.Codec,
 	keeper keeper.Keeper,
+	keeperV2 v2.Keeper,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	spKeeper types.SpKeeper,
@@ -106,10 +110,25 @@ func NewAppModule(
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
 		keeper:         keeper,
+		keeperV2:       keeperV2,
 		accountKeeper:  accountKeeper,
 		bankKeeper:     bankKeeper,
 		spKeeper:       spKeeper,
 	}
+}
+
+// MigrateToV2 migrates the module from v1 to v2
+func (am AppModule) MigrateToV2(cfg module.Configurator) error {
+	am.RegisterServicesV2(cfg)
+	v1GroupApp := keeper.NewGroupApp(am.keeper)
+	v2GroupApp := v2.NewGroupApp(v1GroupApp, &am.keeperV2)
+	return am.keeper.GetCrossChainKeeper().RegisterChannel(types.GroupChannel, types.GroupChannelId, v2GroupApp)
+}
+
+// RegisterServices registers a gRPC query service to respond to the module-specific gRPC queries
+func (am AppModule) RegisterServicesV2(cfg module.Configurator) {
+	typesV2.RegisterMsgServer(cfg.MsgServer(), v2.NewMsgServerImpl(am.keeperV2, keeper.MsgServer{Keeper: am.keeper}))
+	typesV2.RegisterQueryServer(cfg.QueryServer(), am.keeperV2)
 }
 
 // RegisterServices registers a gRPC query service to respond to the module-specific gRPC queries

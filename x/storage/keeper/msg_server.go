@@ -17,19 +17,19 @@ import (
 	virtualgroupmoduletypes "github.com/bnb-chain/greenfield/x/virtualgroup/types"
 )
 
-type msgServer struct {
+type MsgServer struct {
 	Keeper
 }
 
 // NewMsgServerImpl returns an implementation of the MsgServer interface
 // for the provided Keeper.
 func NewMsgServerImpl(keeper Keeper) types.MsgServer {
-	return &msgServer{Keeper: keeper}
+	return &MsgServer{Keeper: keeper}
 }
 
-var _ types.MsgServer = msgServer{}
+var _ types.MsgServer = MsgServer{}
 
-func (k msgServer) CreateBucket(goCtx context.Context, msg *types.MsgCreateBucket) (*types.MsgCreateBucketResponse, error) {
+func (k MsgServer) CreateBucket(goCtx context.Context, msg *types.MsgCreateBucket) (*types.MsgCreateBucketResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	ownerAcc := sdk.MustAccAddressFromHex(msg.Creator)
@@ -53,7 +53,7 @@ func (k msgServer) CreateBucket(goCtx context.Context, msg *types.MsgCreateBucke
 	}, nil
 }
 
-func (k msgServer) DeleteBucket(goCtx context.Context, msg *types.MsgDeleteBucket) (*types.MsgDeleteBucketResponse, error) {
+func (k MsgServer) DeleteBucket(goCtx context.Context, msg *types.MsgDeleteBucket) (*types.MsgDeleteBucketResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	operatorAcc := sdk.MustAccAddressFromHex(msg.Operator)
@@ -67,7 +67,7 @@ func (k msgServer) DeleteBucket(goCtx context.Context, msg *types.MsgDeleteBucke
 	return &types.MsgDeleteBucketResponse{}, nil
 }
 
-func (k msgServer) UpdateBucketInfo(goCtx context.Context, msg *types.MsgUpdateBucketInfo) (*types.MsgUpdateBucketInfoResponse, error) {
+func (k MsgServer) UpdateBucketInfo(goCtx context.Context, msg *types.MsgUpdateBucketInfo) (*types.MsgUpdateBucketInfoResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	operatorAcc := sdk.MustAccAddressFromHex(msg.Operator)
@@ -88,7 +88,7 @@ func (k msgServer) UpdateBucketInfo(goCtx context.Context, msg *types.MsgUpdateB
 	return &types.MsgUpdateBucketInfoResponse{}, nil
 }
 
-func (k msgServer) DiscontinueBucket(goCtx context.Context, msg *storagetypes.MsgDiscontinueBucket) (*storagetypes.MsgDiscontinueBucketResponse, error) {
+func (k MsgServer) DiscontinueBucket(goCtx context.Context, msg *storagetypes.MsgDiscontinueBucket) (*storagetypes.MsgDiscontinueBucketResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	operatorAcc := sdk.MustAccAddressFromHex(msg.Operator)
@@ -100,7 +100,7 @@ func (k msgServer) DiscontinueBucket(goCtx context.Context, msg *storagetypes.Ms
 	return &types.MsgDiscontinueBucketResponse{}, nil
 }
 
-func (k msgServer) CreateObject(goCtx context.Context, msg *types.MsgCreateObject) (*types.MsgCreateObjectResponse, error) {
+func (k MsgServer) CreateObject(goCtx context.Context, msg *types.MsgCreateObject) (*types.MsgCreateObjectResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	ownerAcc := sdk.MustAccAddressFromHex(msg.Creator)
@@ -129,7 +129,7 @@ func (k msgServer) CreateObject(goCtx context.Context, msg *types.MsgCreateObjec
 	}, nil
 }
 
-func (k msgServer) CancelCreateObject(goCtx context.Context, msg *types.MsgCancelCreateObject) (*types.MsgCancelCreateObjectResponse, error) {
+func (k MsgServer) CancelCreateObject(goCtx context.Context, msg *types.MsgCancelCreateObject) (*types.MsgCancelCreateObjectResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	operatorAcc := sdk.MustAccAddressFromHex(msg.Operator)
@@ -142,7 +142,7 @@ func (k msgServer) CancelCreateObject(goCtx context.Context, msg *types.MsgCance
 	return &types.MsgCancelCreateObjectResponse{}, nil
 }
 
-func (k msgServer) SealObject(goCtx context.Context, msg *types.MsgSealObject) (*types.MsgSealObjectResponse, error) {
+func (k MsgServer) SealObject(goCtx context.Context, msg *types.MsgSealObject) (*types.MsgSealObjectResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	spSealAcc := sdk.MustAccAddressFromHex(msg.Operator)
@@ -159,7 +159,7 @@ func (k msgServer) SealObject(goCtx context.Context, msg *types.MsgSealObject) (
 	return &types.MsgSealObjectResponse{}, nil
 }
 
-func (k msgServer) CopyObject(goCtx context.Context, msg *types.MsgCopyObject) (*types.MsgCopyObjectResponse, error) {
+func (k MsgServer) CopyObject(goCtx context.Context, msg *types.MsgCopyObject) (*types.MsgCopyObjectResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	ownerAcc := sdk.MustAccAddressFromHex(msg.Operator)
@@ -179,7 +179,7 @@ func (k msgServer) CopyObject(goCtx context.Context, msg *types.MsgCopyObject) (
 	}, nil
 }
 
-func (k msgServer) DeleteObject(goCtx context.Context, msg *types.MsgDeleteObject) (*types.MsgDeleteObjectResponse, error) {
+func (k MsgServer) DeleteObject(goCtx context.Context, msg *types.MsgDeleteObject) (*types.MsgDeleteObjectResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	operatorAcc := sdk.MustAccAddressFromHex(msg.Operator)
@@ -194,7 +194,7 @@ func (k msgServer) DeleteObject(goCtx context.Context, msg *types.MsgDeleteObjec
 	return &types.MsgDeleteObjectResponse{}, nil
 }
 
-func (k msgServer) RejectSealObject(goCtx context.Context, msg *types.MsgRejectSealObject) (*types.MsgRejectSealObjectResponse, error) {
+func (k MsgServer) RejectSealObject(goCtx context.Context, msg *types.MsgRejectSealObject) (*types.MsgRejectSealObjectResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	spAcc := sdk.MustAccAddressFromHex(msg.Operator)
@@ -205,7 +205,7 @@ func (k msgServer) RejectSealObject(goCtx context.Context, msg *types.MsgRejectS
 	return &types.MsgRejectSealObjectResponse{}, nil
 }
 
-func (k msgServer) DiscontinueObject(goCtx context.Context, msg *storagetypes.MsgDiscontinueObject) (*storagetypes.MsgDiscontinueObjectResponse, error) {
+func (k MsgServer) DiscontinueObject(goCtx context.Context, msg *storagetypes.MsgDiscontinueObject) (*storagetypes.MsgDiscontinueObjectResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	spAcc := sdk.MustAccAddressFromHex(msg.Operator)
@@ -216,7 +216,7 @@ func (k msgServer) DiscontinueObject(goCtx context.Context, msg *storagetypes.Ms
 	return &types.MsgDiscontinueObjectResponse{}, nil
 }
 
-func (k msgServer) UpdateObjectInfo(goCtx context.Context, msg *types.MsgUpdateObjectInfo) (*types.MsgUpdateObjectInfoResponse, error) {
+func (k MsgServer) UpdateObjectInfo(goCtx context.Context, msg *types.MsgUpdateObjectInfo) (*types.MsgUpdateObjectInfoResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	spAcc := sdk.MustAccAddressFromHex(msg.Operator)
@@ -227,7 +227,7 @@ func (k msgServer) UpdateObjectInfo(goCtx context.Context, msg *types.MsgUpdateO
 	return &types.MsgUpdateObjectInfoResponse{}, nil
 }
 
-func (k msgServer) CreateGroup(goCtx context.Context, msg *types.MsgCreateGroup) (*types.MsgCreateGroupResponse, error) {
+func (k MsgServer) CreateGroup(goCtx context.Context, msg *types.MsgCreateGroup) (*types.MsgCreateGroupResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	ownerAcc := sdk.MustAccAddressFromHex(msg.Creator)
@@ -242,7 +242,7 @@ func (k msgServer) CreateGroup(goCtx context.Context, msg *types.MsgCreateGroup)
 	}, nil
 }
 
-func (k msgServer) DeleteGroup(goCtx context.Context, msg *types.MsgDeleteGroup) (*types.MsgDeleteGroupResponse, error) {
+func (k MsgServer) DeleteGroup(goCtx context.Context, msg *types.MsgDeleteGroup) (*types.MsgDeleteGroupResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	operatorAcc := sdk.MustAccAddressFromHex(msg.Operator)
@@ -254,14 +254,14 @@ func (k msgServer) DeleteGroup(goCtx context.Context, msg *types.MsgDeleteGroup)
 	return &types.MsgDeleteGroupResponse{}, nil
 }
 
-func (k msgServer) LeaveGroup(goCtx context.Context, msg *types.MsgLeaveGroup) (*types.MsgLeaveGroupResponse, error) {
+func (k MsgServer) LeaveGroup(goCtx context.Context, msg *types.MsgLeaveGroup) (*types.MsgLeaveGroupResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	memberAcc := sdk.MustAccAddressFromHex(msg.Member)
 
 	ownerAcc := sdk.MustAccAddressFromHex(msg.GroupOwner)
 
-	err := k.Keeper.LeaveGroup(ctx, memberAcc, ownerAcc, msg.GroupName, LeaveGroupOptions{SourceType: types.SOURCE_TYPE_ORIGIN})
+	_, err := k.Keeper.LeaveGroup(ctx, memberAcc, ownerAcc, msg.GroupName, LeaveGroupOptions{SourceType: types.SOURCE_TYPE_ORIGIN})
 	if err != nil {
 		return nil, err
 	}
@@ -269,7 +269,7 @@ func (k msgServer) LeaveGroup(goCtx context.Context, msg *types.MsgLeaveGroup) (
 	return &types.MsgLeaveGroupResponse{}, nil
 }
 
-func (k msgServer) UpdateGroupMember(goCtx context.Context, msg *types.MsgUpdateGroupMember) (*types.MsgUpdateGroupMemberResponse, error) {
+func (k MsgServer) UpdateGroupMember(goCtx context.Context, msg *types.MsgUpdateGroupMember) (*types.MsgUpdateGroupMemberResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	operator := sdk.MustAccAddressFromHex(msg.Operator)
@@ -292,7 +292,7 @@ func (k msgServer) UpdateGroupMember(goCtx context.Context, msg *types.MsgUpdate
 	return &types.MsgUpdateGroupMemberResponse{}, nil
 }
 
-func (k msgServer) UpdateGroupExtra(goCtx context.Context, msg *types.MsgUpdateGroupExtra) (*types.MsgUpdateGroupExtraResponse, error) {
+func (k MsgServer) UpdateGroupExtra(goCtx context.Context, msg *types.MsgUpdateGroupExtra) (*types.MsgUpdateGroupExtraResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	operator := sdk.MustAccAddressFromHex(msg.Operator)
@@ -311,7 +311,7 @@ func (k msgServer) UpdateGroupExtra(goCtx context.Context, msg *types.MsgUpdateG
 	return &types.MsgUpdateGroupExtraResponse{}, nil
 }
 
-func (k msgServer) PutPolicy(goCtx context.Context, msg *types.MsgPutPolicy) (*types.MsgPutPolicyResponse, error) {
+func (k MsgServer) PutPolicy(goCtx context.Context, msg *types.MsgPutPolicy) (*types.MsgPutPolicyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	operatorAddr := sdk.MustAccAddressFromHex(msg.Operator)
@@ -347,7 +347,7 @@ func (k msgServer) PutPolicy(goCtx context.Context, msg *types.MsgPutPolicy) (*t
 
 }
 
-func (k msgServer) DeletePolicy(goCtx context.Context, msg *types.MsgDeletePolicy) (*types.MsgDeletePolicyResponse, error) {
+func (k MsgServer) DeletePolicy(goCtx context.Context, msg *types.MsgDeletePolicy) (*types.MsgDeletePolicyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	operator := sdk.MustAccAddressFromHex(msg.Operator)
 
@@ -365,7 +365,7 @@ func (k msgServer) DeletePolicy(goCtx context.Context, msg *types.MsgDeletePolic
 	return &types.MsgDeletePolicyResponse{PolicyId: policyID}, nil
 }
 
-func (k msgServer) MirrorObject(goCtx context.Context, msg *types.MsgMirrorObject) (*types.MsgMirrorObjectResponse, error) {
+func (k MsgServer) MirrorObject(goCtx context.Context, msg *types.MsgMirrorObject) (*types.MsgMirrorObjectResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	operator := sdk.MustAccAddressFromHex(msg.Operator)
@@ -436,7 +436,7 @@ func (k msgServer) MirrorObject(goCtx context.Context, msg *types.MsgMirrorObjec
 	return nil, nil
 }
 
-func (k msgServer) MirrorBucket(goCtx context.Context, msg *types.MsgMirrorBucket) (*types.MsgMirrorBucketResponse, error) {
+func (k MsgServer) MirrorBucket(goCtx context.Context, msg *types.MsgMirrorBucket) (*types.MsgMirrorBucketResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	operator := sdk.MustAccAddressFromHex(msg.Operator)
@@ -506,7 +506,7 @@ func (k msgServer) MirrorBucket(goCtx context.Context, msg *types.MsgMirrorBucke
 	return nil, nil
 }
 
-func (k msgServer) MirrorGroup(goCtx context.Context, msg *types.MsgMirrorGroup) (*types.MsgMirrorGroupResponse, error) {
+func (k MsgServer) MirrorGroup(goCtx context.Context, msg *types.MsgMirrorGroup) (*types.MsgMirrorGroupResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	operator := sdk.MustAccAddressFromHex(msg.Operator)
@@ -571,7 +571,7 @@ func (k msgServer) MirrorGroup(goCtx context.Context, msg *types.MsgMirrorGroup)
 	return nil, nil
 }
 
-func (k msgServer) UpdateParams(goCtx context.Context, req *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
+func (k MsgServer) UpdateParams(goCtx context.Context, req *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
 	if k.GetAuthority() != req.Authority {
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 	}
@@ -584,7 +584,7 @@ func (k msgServer) UpdateParams(goCtx context.Context, req *types.MsgUpdateParam
 	return &types.MsgUpdateParamsResponse{}, nil
 }
 
-func (k msgServer) MigrateBucket(goCtx context.Context, msg *types.MsgMigrateBucket) (*types.MsgMigrateBucketResponse, error) {
+func (k MsgServer) MigrateBucket(goCtx context.Context, msg *types.MsgMigrateBucket) (*types.MsgMigrateBucketResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	operator := sdk.MustAccAddressFromHex(msg.Operator)
 
@@ -596,7 +596,7 @@ func (k msgServer) MigrateBucket(goCtx context.Context, msg *types.MsgMigrateBuc
 	return &types.MsgMigrateBucketResponse{}, nil
 }
 
-func (k msgServer) CompleteMigrateBucket(goCtx context.Context, msg *types.MsgCompleteMigrateBucket) (*types.MsgCompleteMigrateBucketResponse, error) {
+func (k MsgServer) CompleteMigrateBucket(goCtx context.Context, msg *types.MsgCompleteMigrateBucket) (*types.MsgCompleteMigrateBucketResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	operator := sdk.MustAccAddressFromHex(msg.Operator)
@@ -609,7 +609,7 @@ func (k msgServer) CompleteMigrateBucket(goCtx context.Context, msg *types.MsgCo
 	return &types.MsgCompleteMigrateBucketResponse{}, nil
 }
 
-func (k msgServer) CancelMigrateBucket(goCtx context.Context, msg *types.MsgCancelMigrateBucket) (*types.MsgCancelMigrateBucketResponse, error) {
+func (k MsgServer) CancelMigrateBucket(goCtx context.Context, msg *types.MsgCancelMigrateBucket) (*types.MsgCancelMigrateBucketResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	operator := sdk.MustAccAddressFromHex(msg.Operator)

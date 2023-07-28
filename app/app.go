@@ -106,6 +106,7 @@ import (
 	spmoduletypes "github.com/bnb-chain/greenfield/x/sp/types"
 	storagemodule "github.com/bnb-chain/greenfield/x/storage"
 	storagemodulekeeper "github.com/bnb-chain/greenfield/x/storage/keeper"
+	storagemodulekeeperV2 "github.com/bnb-chain/greenfield/x/storage/keeper/v2"
 	storagemoduletypes "github.com/bnb-chain/greenfield/x/storage/types"
 	virtualgroupmodule "github.com/bnb-chain/greenfield/x/virtualgroup"
 	virtualgroupmodulekeeper "github.com/bnb-chain/greenfield/x/virtualgroup/keeper"
@@ -496,7 +497,8 @@ func New(
 		app.VirtualgroupKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
-	storageModule := storagemodule.NewAppModule(appCodec, app.StorageKeeper, app.AccountKeeper, app.BankKeeper, app.SpKeeper)
+	storageKeeperV2 := storagemodulekeeperV2.NewKeeper(app.StorageKeeper)
+	storageModule := storagemodule.NewAppModule(appCodec, app.StorageKeeper, storageKeeperV2, app.AccountKeeper, app.BankKeeper, app.SpKeeper)
 
 	app.ChallengeKeeper = *challengemodulekeeper.NewKeeper(
 		appCodec,

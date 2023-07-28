@@ -79,6 +79,42 @@ func NewKeeper(
 func (k Keeper) GetAuthority() string {
 	return k.authority
 }
+func (k Keeper) GetCdc() codec.BinaryCodec {
+	return k.cdc
+}
+func (k Keeper) GetStoreKey() storetypes.StoreKey {
+	return k.storeKey
+}
+func (k Keeper) GetTStoreKey() storetypes.StoreKey {
+	return k.tStoreKey
+}
+func (k Keeper) GetSpKeeper() types.SpKeeper {
+	return k.spKeeper
+}
+func (k Keeper) GetPaymentKeeper() types.PaymentKeeper {
+	return k.paymentKeeper
+}
+func (k Keeper) GetAccountKeeper() types.AccountKeeper {
+	return k.accountKeeper
+}
+func (k Keeper) GetPermKeeper() types.PermissionKeeper {
+	return k.permKeeper
+}
+func (k Keeper) GetCrossChainKeeper() types.CrossChainKeeper {
+	return k.crossChainKeeper
+}
+func (k Keeper) GetVirtualGroupKeeper() types.VirtualGroupKeeper {
+	return k.virtualGroupKeeper
+}
+func (k Keeper) GetBucketSeq() sequence.Sequence[sdkmath.Uint] {
+	return k.bucketSeq
+}
+func (k Keeper) GetObjectSeq() sequence.Sequence[sdkmath.Uint] {
+	return k.objectSeq
+}
+func (k Keeper) GetGroupSeq() sequence.Sequence[sdkmath.Uint] {
+	return k.groupSeq
+}
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
@@ -1205,7 +1241,7 @@ func (k Keeper) CreateGroup(
 		if err != nil {
 			return sdkmath.ZeroUint(), err
 		}
-		err = k.permKeeper.AddGroupMember(ctx, groupInfo.Id, memberAddress)
+		_, err = k.permKeeper.AddGroupMember(ctx, groupInfo.Id, memberAddress)
 		if err != nil {
 			return sdkmath.Uint{}, err
 		}
@@ -1296,20 +1332,20 @@ func (k Keeper) DeleteGroup(ctx sdk.Context, operator sdk.AccAddress, groupName 
 
 func (k Keeper) LeaveGroup(
 	ctx sdk.Context, member sdk.AccAddress, owner sdk.AccAddress,
-	groupName string, opts LeaveGroupOptions) error {
+	groupName string, opts LeaveGroupOptions) (*types.GroupInfo, error) {
 
 	groupInfo, found := k.GetGroupInfo(ctx, owner, groupName)
 	if !found {
-		return types.ErrNoSuchGroup
+		return nil, types.ErrNoSuchGroup
 	}
 	if groupInfo.SourceType != opts.SourceType {
-		return types.ErrSourceTypeMismatch
+		return nil, types.ErrSourceTypeMismatch
 	}
 
 	// Note: Delete group does not require the group is empty. The group member will be deleted by on-chain GC.
 	err := k.permKeeper.RemoveGroupMember(ctx, groupInfo.Id, member)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if err := ctx.EventManager().EmitTypedEvents(&types.EventDeleteGroup{
@@ -1317,9 +1353,9 @@ func (k Keeper) LeaveGroup(
 		GroupName: groupInfo.GroupName,
 		GroupId:   groupInfo.Id,
 	}); err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return groupInfo, nil
 }
 
 func (k Keeper) UpdateGroupMember(ctx sdk.Context, operator sdk.AccAddress, groupInfo *types.GroupInfo, opts UpdateGroupMemberOptions) error {
@@ -1340,7 +1376,7 @@ func (k Keeper) UpdateGroupMember(ctx sdk.Context, operator sdk.AccAddress, grou
 		if err != nil {
 			return err
 		}
-		err = k.permKeeper.AddGroupMember(ctx, groupInfo.Id, memberAcc)
+		_, err = k.permKeeper.AddGroupMember(ctx, groupInfo.Id, memberAcc)
 		if err != nil {
 			return err
 		}
@@ -1355,7 +1391,6 @@ func (k Keeper) UpdateGroupMember(ctx sdk.Context, operator sdk.AccAddress, grou
 		if err != nil {
 			return err
 		}
-
 	}
 	if err := ctx.EventManager().EmitTypedEvents(&types.EventUpdateGroupMember{
 		Operator:        operator.String(),
