@@ -18,16 +18,16 @@ const (
 
 var (
 	// For group
-	_ sdk.Msg = &MsgCreateGroupV2{}
-	_ sdk.Msg = &MsgUpdateGroupMemberV2{}
+	_ sdk.Msg = &MsgCreateGroup{}
+	_ sdk.Msg = &MsgUpdateGroupMember{}
 )
 
-func NewMsgCreateGroup(creator sdk.AccAddress, groupName string, membersAcc []sdk.AccAddress, extra string, membersWithExpiration []*MsgGroupMember) *MsgCreateGroupV2 {
+func NewMsgCreateGroup(creator sdk.AccAddress, groupName string, membersAcc []sdk.AccAddress, extra string, membersWithExpiration []*MsgGroupMember) *MsgCreateGroup {
 	var members []string
 	for _, member := range membersAcc {
 		members = append(members, member.String())
 	}
-	return &MsgCreateGroupV2{
+	return &MsgCreateGroup{
 		Creator:               creator.String(),
 		GroupName:             groupName,
 		Members:               members,
@@ -37,17 +37,17 @@ func NewMsgCreateGroup(creator sdk.AccAddress, groupName string, membersAcc []sd
 }
 
 // Route implements the sdk.Msg interface.
-func (msg *MsgCreateGroupV2) Route() string {
+func (msg *MsgCreateGroup) Route() string {
 	return types.RouterKey
 }
 
 // Type implements the sdk.Msg interface.
-func (msg *MsgCreateGroupV2) Type() string {
+func (msg *MsgCreateGroup) Type() string {
 	return TypeMsgCreateGroup
 }
 
 // GetSigners implements the sdk.Msg interface.
-func (msg *MsgCreateGroupV2) GetSigners() []sdk.AccAddress {
+func (msg *MsgCreateGroup) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromHexUnsafe(msg.Creator)
 	if err != nil {
 		panic(err)
@@ -56,13 +56,13 @@ func (msg *MsgCreateGroupV2) GetSigners() []sdk.AccAddress {
 }
 
 // GetSignBytes returns the message bytes to sign over.
-func (msg *MsgCreateGroupV2) GetSignBytes() []byte {
+func (msg *MsgCreateGroup) GetSignBytes() []byte {
 	bz := types.ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 // ValidateBasic implements the sdk.Msg interface.
-func (msg *MsgCreateGroupV2) ValidateBasic() error {
+func (msg *MsgCreateGroup) ValidateBasic() error {
 	_, err := sdk.AccAddressFromHexUnsafe(msg.Creator)
 	if err != nil {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
@@ -84,7 +84,7 @@ func (msg *MsgCreateGroupV2) ValidateBasic() error {
 
 func NewMsgUpdateGroupMember(
 	operator sdk.AccAddress, groupOwner sdk.AccAddress, groupName string, membersToAdd []sdk.AccAddress,
-	membersToDelete []sdk.AccAddress, membersWithExpiration []*MsgGroupMember) *MsgUpdateGroupMemberV2 {
+	membersToDelete []sdk.AccAddress, membersWithExpiration []*MsgGroupMember) *MsgUpdateGroupMember {
 	var membersAddrToAdd, membersAddrToDelete []string
 	for _, member := range membersToAdd {
 		membersAddrToAdd = append(membersAddrToAdd, member.String())
@@ -92,7 +92,7 @@ func NewMsgUpdateGroupMember(
 	for _, member := range membersToDelete {
 		membersAddrToDelete = append(membersAddrToDelete, member.String())
 	}
-	return &MsgUpdateGroupMemberV2{
+	return &MsgUpdateGroupMember{
 		Operator:              operator.String(),
 		GroupOwner:            groupOwner.String(),
 		GroupName:             groupName,
@@ -103,17 +103,17 @@ func NewMsgUpdateGroupMember(
 }
 
 // Route implements the sdk.Msg interface.
-func (msg *MsgUpdateGroupMemberV2) Route() string {
+func (msg *MsgUpdateGroupMember) Route() string {
 	return types.RouterKey
 }
 
 // Type implements the sdk.Msg interface.
-func (msg *MsgUpdateGroupMemberV2) Type() string {
+func (msg *MsgUpdateGroupMember) Type() string {
 	return TypeMsgUpdateGroupMember
 }
 
 // GetSigners implements the sdk.Msg interface.
-func (msg *MsgUpdateGroupMemberV2) GetSigners() []sdk.AccAddress {
+func (msg *MsgUpdateGroupMember) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromHexUnsafe(msg.Operator)
 	if err != nil {
 		panic(err)
@@ -122,13 +122,13 @@ func (msg *MsgUpdateGroupMemberV2) GetSigners() []sdk.AccAddress {
 }
 
 // GetSignBytes returns the message bytes to sign over.
-func (msg *MsgUpdateGroupMemberV2) GetSignBytes() []byte {
+func (msg *MsgUpdateGroupMember) GetSignBytes() []byte {
 	bz := types.ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 // ValidateBasic implements the sdk.Msg interface.
-func (msg *MsgUpdateGroupMemberV2) ValidateBasic() error {
+func (msg *MsgUpdateGroupMember) ValidateBasic() error {
 	_, err := sdk.AccAddressFromHexUnsafe(msg.Operator)
 	if err != nil {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid operator address (%s)", err)

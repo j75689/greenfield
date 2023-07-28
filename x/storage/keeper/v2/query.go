@@ -96,7 +96,7 @@ func (k Keeper) ListGroup(ctx context.Context, req *types.QueryListGroupRequest)
 }
 
 // Queries a list of HeadGroupMember items.
-func (k Keeper) HeadGroupMember(goCtx context.Context, req *types.QueryHeadGroupMemberRequest) (*v2.QueryHeadGroupMemberResponseV2, error) {
+func (k Keeper) HeadGroupMember(goCtx context.Context, req *types.QueryHeadGroupMemberRequest) (*v2.QueryHeadGroupMemberResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -125,7 +125,7 @@ func (k Keeper) HeadGroupMember(goCtx context.Context, req *types.QueryHeadGroup
 		memberExpirationTime = groupMemberExtra.ExpirationTime
 	}
 
-	return &v2.QueryHeadGroupMemberResponseV2{
+	return &v2.QueryHeadGroupMemberResponse{
 		Id:             groupMember.Id,
 		GroupId:        groupMember.GroupId,
 		Member:         groupMember.Member,

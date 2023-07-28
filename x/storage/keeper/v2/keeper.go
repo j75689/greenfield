@@ -157,13 +157,13 @@ func (k Keeper) UpdateGroupMember(ctx sdk.Context, operator sdk.AccAddress, grou
 	}
 
 	if err := ctx.EventManager().EmitTypedEvents(&v2.EventUpdateGroupMember{
-		Operator:        operator.String(),
-		Owner:           groupInfo.Owner,
-		GroupName:       groupInfo.GroupName,
-		GroupId:         groupInfo.Id,
-		MembersToAdd:    opts.MembersToAdd,
-		MembersToDelete: opts.MembersToDelete,
-		MembersDetail:   groupMemberInfoEvents,
+		Operator:           operator.String(),
+		Owner:              groupInfo.Owner,
+		GroupName:          groupInfo.GroupName,
+		GroupId:            groupInfo.Id,
+		MembersToAdd:       opts.MembersToAdd,
+		MembersToDelete:    opts.MembersToDelete,
+		AddedMembersDetail: groupMemberInfoEvents,
 	}); err != nil {
 		return err
 	}

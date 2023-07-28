@@ -82,7 +82,7 @@ func (server MsgServer) UpdateObjectInfo(ctx context.Context, msg *types.MsgUpda
 }
 
 // basic operation of group
-func (server MsgServer) CreateGroup(goCtx context.Context, msg *v2.MsgCreateGroupV2) (*types.MsgCreateGroupResponse, error) {
+func (server MsgServer) CreateGroup(goCtx context.Context, msg *v2.MsgCreateGroup) (*types.MsgCreateGroupResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	ownerAcc := sdk.MustAccAddressFromHex(msg.Creator)
@@ -101,7 +101,7 @@ func (server MsgServer) DeleteGroup(ctx context.Context, msg *types.MsgDeleteGro
 	return server.v1MsgServer.DeleteGroup(ctx, msg)
 }
 
-func (server MsgServer) UpdateGroupMember(goCtx context.Context, msg *v2.MsgUpdateGroupMemberV2) (*types.MsgUpdateGroupMemberResponse, error) {
+func (server MsgServer) UpdateGroupMember(goCtx context.Context, msg *v2.MsgUpdateGroupMember) (*types.MsgUpdateGroupMemberResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	operator := sdk.MustAccAddressFromHex(msg.Operator)

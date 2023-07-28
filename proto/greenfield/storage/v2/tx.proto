@@ -12,8 +12,8 @@ import "greenfield/common/wrapper.proto";
 import "greenfield/permission/common.proto";
 import "greenfield/storage/common.proto";
 import "greenfield/storage/params.proto";
-import "greenfield/storage/types.proto";
 import "greenfield/storage/tx.proto";
+import "greenfield/storage/types.proto";
 
 option go_package = "github.com/bnb-chain/greenfield/x/storage/types/v2";
 
@@ -38,9 +38,9 @@ service Msg {
   rpc UpdateObjectInfo(MsgUpdateObjectInfo) returns (MsgUpdateObjectInfoResponse);
 
   // basic operation of group
-  rpc CreateGroup(MsgCreateGroupV2) returns (MsgCreateGroupResponse);
+  rpc CreateGroup(MsgCreateGroup) returns (MsgCreateGroupResponse);
   rpc DeleteGroup(MsgDeleteGroup) returns (MsgDeleteGroupResponse);
-  rpc UpdateGroupMember(MsgUpdateGroupMemberV2) returns (MsgUpdateGroupMemberResponse);
+  rpc UpdateGroupMember(MsgUpdateGroupMember) returns (MsgUpdateGroupMemberResponse);
   rpc UpdateGroupExtra(MsgUpdateGroupExtra) returns (MsgUpdateGroupExtraResponse);
   rpc LeaveGroup(MsgLeaveGroup) returns (MsgLeaveGroupResponse);
   rpc MirrorGroup(MsgMirrorGroup) returns (MsgMirrorGroupResponse);
@@ -61,7 +61,7 @@ service Msg {
   rpc CancelMigrateBucket(MsgCancelMigrateBucket) returns (MsgCancelMigrateBucketResponse);
 }
 
-message MsgCreateGroupV2 {
+message MsgCreateGroup {
   option (cosmos.msg.v1.signer) = "creator";
 
   // owner defines the account address of group owner who create the group
@@ -80,8 +80,7 @@ message MsgCreateGroupV2 {
   repeated MsgGroupMember members_with_expiration = 5;
 }
 
-
-message MsgUpdateGroupMemberV2 {
+message MsgUpdateGroupMember {
   option (cosmos.msg.v1.signer) = "operator";
 
   // operator defines the account address of the operator who has the UpdateGroupMember permission of the group.
