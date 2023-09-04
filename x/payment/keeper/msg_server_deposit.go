@@ -21,14 +21,16 @@ func (k msgServer) Deposit(goCtx context.Context, msg *types.MsgDeposit) (*types
 	if err != nil {
 		return nil, err
 	}
-	if ctx.IsUpgraded(upgradetypes.Nagqu) && k.IsPaymentAccount(ctx, to) {
-		balanceOfToAccount := k.bankKeeper.GetBalance(ctx, to, k.GetParams(ctx).FeeDenom)
-		if balanceOfToAccount.IsPositive() {
-			err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, to, types.ModuleName, sdk.NewCoins(balanceOfToAccount))
-			if err != nil {
-				return nil, err
+	if ctx.IsUpgraded(upgradetypes.Nagqu) {
+		if k.IsPaymentAccount(ctx, to) {
+			balanceOfToAccount := k.bankKeeper.GetBalance(ctx, to, k.GetParams(ctx).FeeDenom)
+			if balanceOfToAccount.IsPositive() {
+				err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, to, types.ModuleName, sdk.NewCoins(balanceOfToAccount))
+				if err != nil {
+					return nil, err
+				}
+				depositAmount = depositAmount.Add(balanceOfToAccount.Amount)
 			}
-			depositAmount = depositAmount.Add(balanceOfToAccount.Amount)
 		}
 	}
 
