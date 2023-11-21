@@ -724,7 +724,22 @@ func New(
 	ethRouter.RegisterConstHandler()
 	ethRouter.RegisterEthQueryBalanceHandler(app.BankKeeper, bankkeeper.EthQueryBalanceHandlerGen)
 
+	app.IteratorStoreSize()
+	os.Exit(0)
 	return app
+}
+
+func (app *App) IteratorStoreSize() {
+	storeSizeMap := make(map[string]uint64, len(app.keys))
+	for _, storeKey := range app.keys {
+		iterator := app.CommitMultiStore().GetKVStore(storeKey).Iterator(nil, nil)
+		for ; iterator.Valid(); iterator.Next() {
+			storeSizeMap[storeKey.Name()] += uint64(len(iterator.Key()) + len(iterator.Value()))
+		}
+		iterator.Close()
+	}
+
+	fmt.Printf("store size: %+v", storeSizeMap)
 }
 
 func (app *App) initModules(ctx sdk.Context) {
