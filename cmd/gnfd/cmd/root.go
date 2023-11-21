@@ -340,13 +340,11 @@ func (a appCreator) newApp(
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("snapshot db status, %+v", snapshotDB.Stats())
 
 	snapshotOptions := snapshottypes.NewSnapshotOptions(
 		cast.ToUint64(appOpts.Get(server.FlagStateSyncSnapshotInterval)),
 		cast.ToUint32(appOpts.Get(server.FlagStateSyncSnapshotKeepRecent)),
 	)
-	fmt.Printf("application db status, %+v", db.Stats())
 
 	return app.New(
 		logger,
