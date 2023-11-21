@@ -28,7 +28,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/server/config"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/store/iavl"
-	"github.com/cosmos/cosmos-sdk/store/rootmulti"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
@@ -725,17 +724,7 @@ func New(
 	ethRouter.RegisterConstHandler()
 	ethRouter.RegisterEthQueryBalanceHandler(app.BankKeeper, bankkeeper.EthQueryBalanceHandlerGen)
 
-	app.InspectStoreSize()
-	os.Exit(0)
 	return app
-}
-
-func (app *App) InspectStoreSize() {
-	rs, ok := app.CommitMultiStore().(*rootmulti.Store)
-	if !ok {
-		panic("cannot convert store to root multi store")
-	}
-	rs.InspectStore()
 }
 
 func (app *App) initModules(ctx sdk.Context) {
