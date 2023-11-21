@@ -28,6 +28,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/server/config"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/store/iavl"
+	"github.com/cosmos/cosmos-sdk/store/rootmulti"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
@@ -724,26 +725,17 @@ func New(
 	ethRouter.RegisterConstHandler()
 	ethRouter.RegisterEthQueryBalanceHandler(app.BankKeeper, bankkeeper.EthQueryBalanceHandlerGen)
 
-	app.IteratorCMSSize()
+	app.InspectStoreSize()
 	os.Exit(0)
 	return app
 }
 
-func (app *App) IteratorCMSSize() {
-	total := uint64(0)
-	storeSizeMap := make(map[string]uint64, len(app.keys))
-	for _, storeKey := range app.keys {
-		iterator := app.CommitMultiStore().GetCommitKVStore(storeKey).Iterator(nil, nil)
-		for ; iterator.Valid(); iterator.Next() {
-			size := uint64(len(iterator.Key()) + len(iterator.Value()))
-			storeSizeMap[storeKey.Name()] += size
-			total += size
-		}
-		iterator.Close()
+func (app *App) InspectStoreSize() {
+	rs, ok := app.CommitMultiStore().(*rootmulti.Store)
+	if !ok {
+		panic("cannot convert store to root multi store")
 	}
-
-	fmt.Printf("store size: %+v\n", storeSizeMap)
-	fmt.Printf("total size: %d\n", total)
+	rs.InspectStore()
 }
 
 func (app *App) initModules(ctx sdk.Context) {
