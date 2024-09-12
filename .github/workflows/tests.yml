@@ -43,6 +43,10 @@ jobs:
     - name: run tests
       run: |
         make test
+    - uses: actions/upload-artifact@v3
+      with:
+        path: |
+          ./coverage.out
     - name: make coverage report
       id: coverage-report
       if: github.event_name == 'pull_request'
